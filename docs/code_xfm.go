@@ -56,7 +56,7 @@ func (t docCodeSpanTransformer) transformText(input string) (content, href strin
 		content = text
 		h = append(h, baseURL...)
 		h = append(h, "type/"...)
-		h = append(h, prim...)
+		h = append(h, resolveRobloxDatatype(prim)...)
 		h = append(h, ".html"...)
 		if len(sec) > 0 {
 			h = append(h, "#member-"...)
