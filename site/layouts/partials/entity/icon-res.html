@@ -85,6 +85,7 @@ protected: bool // Whether member is protected
 	{{if not $dark}}{{$dark = resources.Get (print "icons/dark/Placeholder.png")}}{{end}}
 {{end}}
 
+{{/*
 {{if $light}}
 	{{if .protected}}
 		{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
@@ -99,5 +100,20 @@ protected: bool // Whether member is protected
 	{{end}}
 	{{$dark = $dark.RelPermalink}}
 {{end}}
+*/}}
+
+{{if .protected}}
+	{{if $light}}
+		{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
+		{{$light = $light.Filter (images.Overlay $overlay 0 24)}}
+	{{end}}
+	{{if $dark}}
+		{{$overlay := (resources.Get "icons/dark/Logpoint.png").Resize "24x"}}
+		{{$dark = $dark.Filter (images.Overlay $overlay 0 24)}}
+	{{end}}
+{{end}}
+
+{{$light = $light.RelPermalink}}
+{{$dark = $dark.RelPermalink}}
 
 {{return (dict "Light" $light "Dark" $dark)}}

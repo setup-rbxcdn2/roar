@@ -41,21 +41,7 @@ secondary: string // The secondary identifier.
 			{{else}}
 				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
 			{{end}}
-		{{else if eq $entityType "Function"}}
-			{{if and $dump.Security (ne $dump.Security "None")}}
-				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
-			{{else}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
-			{{end}}
-		{{else if eq $entityType "Event"}}
-			{{if and $dump.Security (ne $dump.Security "None")}}
-				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
-			{{else}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
-			{{end}}
-		{{else if eq $entityType "Callback"}}
+		{{else if or (eq $entityType "Function") (eq $entityType "Event") (eq $entityType "Callback")}}
 			{{if and $dump.Security (ne $dump.Security "None")}}
 				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
 				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
