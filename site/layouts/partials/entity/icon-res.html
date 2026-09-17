@@ -109,13 +109,13 @@ securityName: string // The name of the security if present.
 		{{if $light}}
 			{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
 			{{$overlay = $overlay.Filter (images.Colorize 0 0 100)}}
-			{{$overlay = $overlay.Filter (images.Colorize 28 100 23)}}
+			{{$overlay = $overlay.Filter (images.Tint "#00ff00")}}
 			{{$light = $light.Filter (images.Overlay $overlay 0 24)}}
 		{{end}}
 		{{if $dark}}
 			{{$overlay := (resources.Get "icons/dark/Logpoint.png").Resize "24x"}}
 			{{$overlay = $overlay.Filter (images.Colorize 0 0 100)}}
-			{{$overlay = $overlay.Filter (images.Colorize 28 100 33)}}
+			{{$overlay = $overlay.Filter (images.Tint "#00ff00")}}
 			{{$dark = $dark.Filter (images.Overlay $overlay 0 24)}}
 		{{end}}
 	{{end}}
