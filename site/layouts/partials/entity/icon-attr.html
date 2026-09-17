@@ -9,6 +9,8 @@ secondary: string // The secondary identifier.
 {{$res := false}}
 {{$entityType := false}}
 {{$title := false}}
+
+
 {{if eq $type "hub"}}
 	{{$res = partial "entity/icon-res.html" (dict "kind" "hub")}}
 {{else if eq $type "typemember"}}
@@ -24,6 +26,11 @@ secondary: string // The secondary identifier.
 		{{$entityType = $dump.MemberType}}
 		{{$title = $entityType}}
 		{{if eq $entityType "Property"}}
+			{{$iconArgs_member := dict
+				"kind" "entity"
+				"type" $entityType
+			}}
+
 			{{$sec := slice}}
 			{{if and (eq $dump.ReadSecurity $dump.WriteSecurity) (ne $dump.ReadSecurity "None" "")}}
 				{{$sec = $sec | append (print "Read/Write: " $dump.ReadSecurity)}}
@@ -35,19 +42,36 @@ secondary: string // The secondary identifier.
 					{{$sec = $sec | append (print "Write: " $dump.WriteSecurity)}}
 				{{end}}
 			{{end}}
+
 			{{if $sec}}
 				{{$title = (printf "Protected %s (%s)" $title (delimit $sec ", "))}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
-			{{else}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+				{{/* this here merges */}}
+				{{$iconArgs_member = merge $iconArgs_member (dict
+					"protected" true
+					"securityName" $dump.ReadSecurity
+				)}}
 			{{end}}
-		{{else if or (eq $entityType "Function") (eq $entityType "Event") (eq $entityType "Callback")}}
+
+			{{$res = partial "entity/icon-res.html" $iconArgs_member}}
+		{{else if or 
+			(eq $entityType "Function")
+			(eq $entityType "Event")
+			(eq $entityType "Callback")
+		}}
+			{{$iconArgs_member := dict
+				"kind" "entity"
+				"type" $entityType
+			}}
+			
 			{{if and $dump.Security (ne $dump.Security "None")}}
 				{{$title = (printf "Protected %s (%s)" $title $dump.Security)}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType "protected" true)}}
-			{{else}}
-				{{$res = partial "entity/icon-res.html" (dict "kind" "entity" "type" $entityType)}}
+				{{$iconArgs_member = merge $iconArgs_member (dict
+					"protected" true
+					"securityName" $dump.Security
+				)}}
 			{{end}}
+
+			{{$res = partial "entity/icon-res.html" $iconArgs_member}}
 		{{end}}
 	{{else if eq $type "enum"}}
 		{{$entityType = "Enum"}}

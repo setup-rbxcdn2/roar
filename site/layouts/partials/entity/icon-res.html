@@ -8,6 +8,7 @@ type: string
 name: string // Name of class (type=class)
 category: string // Category of type (type=type)
 protected: bool // Whether member is protected
+securityName: string // The name of the security if present.
 
 */}}
 {{$kind := .kind | lower}}
@@ -85,35 +86,51 @@ protected: bool // Whether member is protected
 	{{if not $dark}}{{$dark = resources.Get (print "icons/dark/Placeholder.png")}}{{end}}
 {{end}}
 
-{{/*
-{{if $light}}
-	{{if .protected}}
-		{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
-		{{$light = $light.Filter (images.Overlay $overlay 0 24)}}
-	{{end}}
-	{{$light = $light.RelPermalink}}
-{{end}}
-{{if $dark}}
-	{{if .protected}}
-		{{$overlay := (resources.Get "icons/dark/Logpoint.png").Resize "24x"}}
-		{{$dark = $dark.Filter (images.Overlay $overlay 0 24)}}
-	{{end}}
-	{{$dark = $dark.RelPermalink}}
-{{end}}
-*/}}
 
 {{if .protected}}
-	{{if $light}}
-		{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
-		{{$light = $light.Filter (images.Overlay $overlay 0 24)}}
+	{{if or
+		(eq .securityName "RobloxScriptSecurity")
+		(eq .securityName "RobloxPlaceSecurity")
+		(eq .securityName "RobloxSecurity")
+		(eq .securityName "WritePlayerSecurity")
+	}}
+		{{/* warnf "securityName=%q" .securityName */}}
+		{{if $light}}
+			{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
+			{{$light = $light.Filter (images.Overlay $overlay 0 24)}}
+		{{end}}
+		{{if $dark}}
+			{{$overlay := (resources.Get "icons/dark/Logpoint.png").Resize "24x"}}
+			{{$dark = $dark.Filter (images.Overlay $overlay 0 24)}}
+		{{end}}
+	{{else}}
+		{{/* If it's something else that isn't RobloxScriptSecurity */}}
+
+		{{if $light}}
+			{{$overlay := (resources.Get "icons/light/Logpoint.png").Resize "24x"}}
+			{{$overlay = $overlay.Filter (images.Colorize 0 0 100)}}
+			{{$overlay = $overlay.Filter (images.Colorize 28 100 23)}}
+			{{$light = $light.Filter (images.Overlay $overlay 0 24)}}
+		{{end}}
+		{{if $dark}}
+			{{$overlay := (resources.Get "icons/dark/Logpoint.png").Resize "24x"}}
+			{{$overlay = $overlay.Filter (images.Colorize 0 0 100)}}
+			{{$overlay = $overlay.Filter (images.Colorize 28 100 33)}}
+			{{$dark = $dark.Filter (images.Overlay $overlay 0 24)}}
+		{{end}}
 	{{end}}
-	{{if $dark}}
-		{{$overlay := (resources.Get "icons/dark/Logpoint.png").Resize "24x"}}
-		{{$dark = $dark.Filter (images.Overlay $overlay 0 24)}}
-	{{end}}
+
 {{end}}
 
+{{/* Do this here anyways */}}
 {{$light = $light.RelPermalink}}
 {{$dark = $dark.RelPermalink}}
+
+{{/*
+{{warnf "kind=%q securityName=%q" $kind .securityName}}
+{{warnf "light=%q" $light}}
+{{warnf "dark=%q" $dark}}
+*/}}
+
 
 {{return (dict "Light" $light "Dark" $dark)}}
